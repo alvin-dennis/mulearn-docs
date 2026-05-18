@@ -1,9 +1,11 @@
+import { RichText } from "@payloadcms/richtext-lexical/react";
 import { DocsBody, DocsDescription, DocsPage, DocsTitle } from "fumadocs-ui/page";
 import { headers } from "next/headers";
 import { notFound } from "next/navigation";
 import { getPayload } from "payload";
 import { LivePreview } from "@/components/LivePreview";
-import { extractTableOfContents, serializeLexical } from "@/lib/lexical-serializer";
+import { extractTableOfContents } from "@/lib/doc-paths";
+import { buildJSXConverters } from "@/lib/lexical-jsx-converters";
 import { source } from "@/lib/source";
 import config from "@/payload.config";
 
@@ -63,7 +65,6 @@ export default async function Page(props: PageProps) {
   const updatedAt = docData?.updatedAt ? parseUpdatedAt(docData.updatedAt as string) : undefined;
 
   const toc = extractTableOfContents(content);
-  const serializedContent = await serializeLexical(content, payload);
 
   return (
     <DocsPage
@@ -75,7 +76,9 @@ export default async function Page(props: PageProps) {
       <DocsTitle className="font-bold font-display text-4xl md:text-5xl">{title}</DocsTitle>
       <DocsDescription>{description}</DocsDescription>
       <div className="flex flex-row items-center border-b" />
-      <DocsBody dangerouslySetInnerHTML={{ __html: serializedContent }} />
+      <DocsBody>
+        <RichText data={content} converters={buildJSXConverters(payload)} />
+      </DocsBody>
       {updatedAt && (
         <p className="text-sm text-fd-muted-foreground -mt-2 mb-4">Last updated on {updatedAt}</p>
       )}

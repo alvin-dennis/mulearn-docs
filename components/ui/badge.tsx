@@ -30,7 +30,7 @@ function Badge({
   ...props
 }: React.ComponentProps<"span"> & VariantProps<typeof badgeVariants> & { asChild?: boolean }) {
   const Comp = asChild ? Slot : "span";
-  const { popover, ...restProps } = props as any;
+  const { popover: _popover, ...restProps } = props as Record<string, unknown>;
 
   return (
     <Comp className={cn(badgeVariants({ variant }), className)} data-slot="badge" {...restProps} />

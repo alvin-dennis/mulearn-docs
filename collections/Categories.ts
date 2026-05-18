@@ -18,9 +18,9 @@ export const Categories: CollectionConfig = {
     update: ({ req: { user } }) => {
       return Boolean(user?.role === "owner" || user?.role === "admin");
     },
-    // Only owner can delete categories
+    // Owner and admins can delete categories
     delete: ({ req: { user } }) => {
-      return user?.role === "owner";
+      return Boolean(user?.role === "owner" || user?.role === "admin");
     },
   },
   fields: [

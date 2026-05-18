@@ -13,53 +13,53 @@
  * via the `definition` "supportedTimezones".
  */
 export type SupportedTimezones =
-  | "Pacific/Midway"
-  | "Pacific/Niue"
-  | "Pacific/Honolulu"
-  | "Pacific/Rarotonga"
-  | "America/Anchorage"
-  | "Pacific/Gambier"
-  | "America/Los_Angeles"
-  | "America/Tijuana"
-  | "America/Denver"
-  | "America/Phoenix"
-  | "America/Chicago"
-  | "America/Guatemala"
-  | "America/New_York"
-  | "America/Bogota"
-  | "America/Caracas"
-  | "America/Santiago"
-  | "America/Buenos_Aires"
-  | "America/Sao_Paulo"
-  | "Atlantic/South_Georgia"
-  | "Atlantic/Azores"
-  | "Atlantic/Cape_Verde"
-  | "Europe/London"
-  | "Europe/Berlin"
-  | "Africa/Lagos"
-  | "Europe/Athens"
-  | "Africa/Cairo"
-  | "Europe/Moscow"
-  | "Asia/Riyadh"
-  | "Asia/Dubai"
-  | "Asia/Baku"
-  | "Asia/Karachi"
-  | "Asia/Tashkent"
-  | "Asia/Calcutta"
-  | "Asia/Dhaka"
-  | "Asia/Almaty"
-  | "Asia/Jakarta"
-  | "Asia/Bangkok"
-  | "Asia/Shanghai"
-  | "Asia/Singapore"
-  | "Asia/Tokyo"
-  | "Asia/Seoul"
-  | "Australia/Brisbane"
-  | "Australia/Sydney"
-  | "Pacific/Guam"
-  | "Pacific/Noumea"
-  | "Pacific/Auckland"
-  | "Pacific/Fiji";
+  | 'Pacific/Midway'
+  | 'Pacific/Niue'
+  | 'Pacific/Honolulu'
+  | 'Pacific/Rarotonga'
+  | 'America/Anchorage'
+  | 'Pacific/Gambier'
+  | 'America/Los_Angeles'
+  | 'America/Tijuana'
+  | 'America/Denver'
+  | 'America/Phoenix'
+  | 'America/Chicago'
+  | 'America/Guatemala'
+  | 'America/New_York'
+  | 'America/Bogota'
+  | 'America/Caracas'
+  | 'America/Santiago'
+  | 'America/Buenos_Aires'
+  | 'America/Sao_Paulo'
+  | 'Atlantic/South_Georgia'
+  | 'Atlantic/Azores'
+  | 'Atlantic/Cape_Verde'
+  | 'Europe/London'
+  | 'Europe/Berlin'
+  | 'Africa/Lagos'
+  | 'Europe/Athens'
+  | 'Africa/Cairo'
+  | 'Europe/Moscow'
+  | 'Asia/Riyadh'
+  | 'Asia/Dubai'
+  | 'Asia/Baku'
+  | 'Asia/Karachi'
+  | 'Asia/Tashkent'
+  | 'Asia/Calcutta'
+  | 'Asia/Dhaka'
+  | 'Asia/Almaty'
+  | 'Asia/Jakarta'
+  | 'Asia/Bangkok'
+  | 'Asia/Shanghai'
+  | 'Asia/Singapore'
+  | 'Asia/Tokyo'
+  | 'Asia/Seoul'
+  | 'Australia/Brisbane'
+  | 'Australia/Sydney'
+  | 'Pacific/Guam'
+  | 'Pacific/Noumea'
+  | 'Pacific/Auckland'
+  | 'Pacific/Fiji';
 
 export interface Config {
   auth: {
@@ -71,11 +71,11 @@ export interface Config {
     categories: Category;
     docs: Doc;
     search: Search;
-    "payload-kv": PayloadKv;
-    "payload-jobs": PayloadJob;
-    "payload-locked-documents": PayloadLockedDocument;
-    "payload-preferences": PayloadPreference;
-    "payload-migrations": PayloadMigration;
+    'payload-kv': PayloadKv;
+    'payload-jobs': PayloadJob;
+    'payload-locked-documents': PayloadLockedDocument;
+    'payload-preferences': PayloadPreference;
+    'payload-migrations': PayloadMigration;
   };
   collectionsJoins: {};
   collectionsSelect: {
@@ -83,13 +83,11 @@ export interface Config {
     categories: CategoriesSelect<false> | CategoriesSelect<true>;
     docs: DocsSelect<false> | DocsSelect<true>;
     search: SearchSelect<false> | SearchSelect<true>;
-    "payload-kv": PayloadKvSelect<false> | PayloadKvSelect<true>;
-    "payload-jobs": PayloadJobsSelect<false> | PayloadJobsSelect<true>;
-    "payload-locked-documents":
-      | PayloadLockedDocumentsSelect<false>
-      | PayloadLockedDocumentsSelect<true>;
-    "payload-preferences": PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
-    "payload-migrations": PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
+    'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
+    'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
+    'payload-locked-documents': PayloadLockedDocumentsSelect<false> | PayloadLockedDocumentsSelect<true>;
+    'payload-preferences': PayloadPreferencesSelect<false> | PayloadPreferencesSelect<true>;
+    'payload-migrations': PayloadMigrationsSelect<false> | PayloadMigrationsSelect<true>;
   };
   db: {
     defaultIDType: number;
@@ -141,7 +139,7 @@ export interface User {
   /**
    * Owner: Full system access. Admin: Can create users and content. User: Read-only access. Admins will automatically create users with 'user' role.
    */
-  role?: ("owner" | "admin" | "user") | null;
+  role?: ('owner' | 'admin' | 'user') | null;
   updatedAt: string;
   createdAt: string;
   email: string;
@@ -159,7 +157,7 @@ export interface User {
       }[]
     | null;
   password?: string | null;
-  collection: "users";
+  collection: 'users';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -231,8 +229,8 @@ export interface Doc {
         version: number;
         [k: string]: unknown;
       }[];
-      direction: ("ltr" | "rtl") | null;
-      format: "left" | "start" | "center" | "right" | "end" | "justify" | "";
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
       indent: number;
       version: number;
     };
@@ -240,7 +238,7 @@ export interface Doc {
   };
   updatedAt: string;
   createdAt: string;
-  _status?: ("draft" | "published") | null;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This is a collection of automatically created search results. These results are used by the global site search and will be updated automatically as documents in the CMS are created or updated.
@@ -253,7 +251,7 @@ export interface Search {
   title?: string | null;
   priority?: number | null;
   doc: {
-    relationTo: "docs";
+    relationTo: 'docs';
     value: number | Doc;
   };
   description?: string | null;
@@ -329,7 +327,7 @@ export interface PayloadJob {
     | {
         executedAt: string;
         completedAt: string;
-        taskSlug: "inline" | "schedulePublish";
+        taskSlug: 'inline' | 'schedulePublish';
         taskID: string;
         input?:
           | {
@@ -349,7 +347,7 @@ export interface PayloadJob {
           | number
           | boolean
           | null;
-        state: "failed" | "succeeded";
+        state: 'failed' | 'succeeded';
         error?:
           | {
               [k: string]: unknown;
@@ -362,7 +360,7 @@ export interface PayloadJob {
         id?: string | null;
       }[]
     | null;
-  taskSlug?: ("inline" | "schedulePublish") | null;
+  taskSlug?: ('inline' | 'schedulePublish') | null;
   queue?: string | null;
   waitUntil?: string | null;
   processing?: boolean | null;
@@ -377,24 +375,24 @@ export interface PayloadLockedDocument {
   id: number;
   document?:
     | ({
-        relationTo: "users";
+        relationTo: 'users';
         value: number | User;
       } | null)
     | ({
-        relationTo: "categories";
+        relationTo: 'categories';
         value: number | Category;
       } | null)
     | ({
-        relationTo: "docs";
+        relationTo: 'docs';
         value: number | Doc;
       } | null)
     | ({
-        relationTo: "search";
+        relationTo: 'search';
         value: number | Search;
       } | null);
   globalSlug?: string | null;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   updatedAt: string;
@@ -407,7 +405,7 @@ export interface PayloadLockedDocument {
 export interface PayloadPreference {
   id: number;
   user: {
-    relationTo: "users";
+    relationTo: 'users';
     value: number | User;
   };
   key?: string | null;
@@ -578,7 +576,7 @@ export interface CollectionsWidget {
   data?: {
     [k: string]: unknown;
   };
-  width: "full";
+  width: 'full';
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -586,10 +584,10 @@ export interface CollectionsWidget {
  */
 export interface TaskSchedulePublish {
   input: {
-    type?: ("publish" | "unpublish") | null;
+    type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
     doc?: {
-      relationTo: "docs";
+      relationTo: 'docs';
       value: number | Doc;
     } | null;
     global?: string | null;
@@ -599,12 +597,171 @@ export interface TaskSchedulePublish {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CalloutBlock".
+ */
+export interface CalloutBlock {
+  type: 'info' | 'warn' | 'danger' | 'success';
+  text: {
+    root: {
+      type: string;
+      children: {
+        type: any;
+        version: number;
+        [k: string]: unknown;
+      }[];
+      direction: ('ltr' | 'rtl') | null;
+      format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+      indent: number;
+      version: number;
+    };
+    [k: string]: unknown;
+  };
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'callout';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardBlock".
+ */
+export interface CardBlock {
+  title: string;
+  /**
+   * 1–2 sentences.
+   */
+  description?: string | null;
+  /**
+   * Internal docs page or external URL.
+   */
+  link: {
+    type: 'internal' | 'external';
+    doc?: (number | null) | Doc;
+    url?: string | null;
+    /**
+     * Open in new tab
+     */
+    newTab?: boolean | null;
+  };
+  /**
+   * Emoji or lucide-react icon name (optional).
+   */
+  icon?: string | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'card';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "CardGridBlock".
+ */
+export interface CardGridBlock {
+  columns: '2' | '3';
+  cards?: CardBlock[] | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'cardGrid';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "StepsBlock".
+ */
+export interface StepsBlock {
+  steps?:
+    | {
+        title: string;
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'steps';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "TabsBlock".
+ */
+export interface TabsBlock {
+  items?:
+    | {
+        label: string;
+        content: {
+          root: {
+            type: string;
+            children: {
+              type: any;
+              version: number;
+              [k: string]: unknown;
+            }[];
+            direction: ('ltr' | 'rtl') | null;
+            format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+            indent: number;
+            version: number;
+          };
+          [k: string]: unknown;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'tabs';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "PersonaRouteBlock".
+ */
+export interface PersonaRouteBlock {
+  /**
+   * Optional. Defaults to "Already know what you're looking for?"
+   */
+  heading?: string | null;
+  routes?:
+    | {
+        persona: string;
+        destination: string;
+        /**
+         * Internal docs page or external URL.
+         */
+        link: {
+          type: 'internal' | 'external';
+          doc?: (number | null) | Doc;
+          url?: string | null;
+          /**
+           * Open in new tab
+           */
+          newTab?: boolean | null;
+        };
+        id?: string | null;
+      }[]
+    | null;
+  id?: string | null;
+  blockName?: string | null;
+  blockType: 'personaRoute';
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "auth".
  */
 export interface Auth {
   [k: string]: unknown;
 }
 
-declare module "payload" {
+
+declare module 'payload' {
   export interface GeneratedTypes extends Config {}
 }

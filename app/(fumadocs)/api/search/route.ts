@@ -4,12 +4,14 @@ import { source } from "@/lib/source";
 /**
  * Extract plain text from Lexical content for search indexing
  */
-function extractTextFromLexical(content: any): string {
+type LexicalNode = { type?: string; text?: string; children?: LexicalNode[] };
+
+function extractTextFromLexical(content: { root?: LexicalNode } | null | undefined): string {
   if (!content?.root) {
     return "";
   }
 
-  function extractFromNode(node: any): string {
+  function extractFromNode(node: LexicalNode | null | undefined): string {
     if (!node) {
       return "";
     }

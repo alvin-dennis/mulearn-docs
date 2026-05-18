@@ -3,7 +3,8 @@ import { loader, type MetaData, type Source, type VirtualFile } from "fumadocs-c
 import { getPayload } from "payload";
 import { cache } from "react";
 import config from "@/payload.config";
-import { extractTableOfContents } from "./lexical-serializer";
+import type { Doc } from "@/payload-types";
+import { extractTableOfContents, type TableOfContentsItem } from "./doc-paths";
 import { buildDocPath } from "./utils";
 
 // Create a cached function to get the source
@@ -32,10 +33,12 @@ export const source = {
   },
 };
 
+type PayloadPageData = Doc & { description?: string; structuredData: StructuredData };
+
 async function createPayloadSource(): Promise<
   Source<{
     metaData: MetaData;
-    pageData: any;
+    pageData: PayloadPageData;
   }>
 > {
   const payload = await getPayload({ config });
@@ -86,7 +89,7 @@ async function createPayloadSource(): Promise<
     });
 
     // Build a map of doc IDs for path resolution
-    const byId = new Map<string, any>();
+    const byId = new Map<string, Doc>();
     for (const doc of categoryDocs) {
       byId.set(String(doc.id), doc);
     }
@@ -117,7 +120,7 @@ async function createPayloadSource(): Promise<
           get structuredData() {
             return getStructuredData(doc);
           },
-        } as any,
+        } as VirtualFile["data"],
         type: "page",
       });
     }
@@ -130,22 +133,21 @@ async function createPayloadSource(): Promise<
         description: category.description || undefined,
         root: true,
         pages: pagesOrder,
-      } as any,
+      } as VirtualFile["data"],
       type: "meta",
     });
   }
 
   return {
     files,
-  };
+  } as Awaited<ReturnType<typeof createPayloadSource>>;
 }
 
-function getStructuredData(doc: any): StructuredData {
-  // Extract table of contents from Lexical content
+function getStructuredData(doc: Doc): StructuredData {
   const toc = extractTableOfContents(doc.content);
 
   return {
-    headings: toc.map((item: any) => ({
+    headings: toc.map((item: TableOfContentsItem) => ({
       content: item.title,
       id: item.url,
     })),

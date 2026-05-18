@@ -1,8 +1,18 @@
 /** biome-ignore-all lint/suspicious/noExplicitAny: CollectionConfig requires any */
 
-import { lexicalEditor } from "@payloadcms/richtext-lexical";
+import {
+  BlocksFeature,
+  EXPERIMENTAL_TableFeature,
+  lexicalEditor,
+} from "@payloadcms/richtext-lexical";
 import type { CollectionConfig } from "payload";
 import { validateSlug } from "@/lib/utils";
+import { Callout } from "./blocks/Callout";
+import { Card } from "./blocks/Card";
+import { CardGrid } from "./blocks/CardGrid";
+import { PersonaRoute } from "./blocks/PersonaRoute";
+import { Steps } from "./blocks/Steps";
+import { Tabs } from "./blocks/Tabs";
 
 export const Docs: CollectionConfig = {
   slug: "docs",
@@ -21,9 +31,9 @@ export const Docs: CollectionConfig = {
     update: ({ req: { user } }) => {
       return Boolean(user?.role === "owner" || user?.role === "admin");
     },
-    // Only owner can delete docs
+    // Owner and admins can delete docs
     delete: ({ req: { user } }) => {
-      return user?.role === "owner";
+      return Boolean(user?.role === "owner" || user?.role === "admin");
     },
   },
   versions: {
@@ -119,7 +129,15 @@ export const Docs: CollectionConfig = {
       name: "content",
       type: "richText",
       required: true,
-      editor: lexicalEditor({}),
+      editor: lexicalEditor({
+        features: ({ defaultFeatures }) => [
+          ...defaultFeatures,
+          EXPERIMENTAL_TableFeature(),
+          BlocksFeature({
+            blocks: [Callout, Card, CardGrid, Steps, Tabs, PersonaRoute],
+          }),
+        ],
+      }),
       admin: {
         description: "The main content of the documentation page",
       },

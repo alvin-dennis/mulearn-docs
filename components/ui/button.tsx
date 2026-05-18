@@ -54,7 +54,7 @@ function Button({
     asChild?: boolean;
   }) {
   const Comp = asChild ? Slot : "button";
-  const { popover, ...restProps } = props as any;
+  const { popover: _popover, ...restProps } = props as Record<string, unknown>;
 
   return (
     <Comp
