@@ -137,7 +137,7 @@ export interface User {
   id: number;
   name: string;
   /**
-   * Owner: Full system access. Admin: Can create users and content. User: Read-only access. Admins will automatically create users with 'user' role.
+   * Owner: Full system access. Admin: Can create users and content. User: Read-only access.
    */
   role?: ('owner' | 'admin' | 'user') | null;
   updatedAt: string;

@@ -1,10 +1,9 @@
 import { type JSXConvertersFunction, RichText } from "@payloadcms/richtext-lexical/react";
-import type { Payload } from "payload";
 import type { JSX } from "react";
 import { Callout, Card, CardGrid, PersonaRoute, Steps, Tabs } from "@/components/docs/blocks";
-import { isDoc, resolveCategorySlug, resolveDocHref, slugify } from "@/lib/doc-paths";
+import { slugify } from "@/lib/doc-paths";
+import type { HrefMap } from "@/lib/href-map";
 import { resolveLink } from "@/lib/resolve-link";
-import type { Category, Doc } from "@/payload-types";
 
 const headingClasses: Record<string, string> = {
   h1: "md:text-5xl text-4xl font-display font-bold",
@@ -22,10 +21,8 @@ function extractText(node: any): string {
   return "";
 }
 
-export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
+export function buildJSXConverters(hrefMap: HrefMap): JSXConvertersFunction {
   const headingSlugCounts = new Map<string, number>();
-  const docCache = new Map<string, Doc>();
-  const categoryCache = new Map<string, Category>();
 
   const getUniqueSlug = (base: string): string => {
     const baseSlug = base || "heading";
@@ -39,7 +36,7 @@ export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
   };
 
   const Nested = ({ data }: { data: any }) =>
-    data ? <RichText data={data} converters={buildJSXConverters(payload)} /> : null;
+    data ? <RichText data={data} converters={buildJSXConverters(hrefMap)} /> : null;
 
   return ({ defaultConverters }) => ({
     ...defaultConverters,
@@ -55,44 +52,34 @@ export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
       );
     },
 
-    relationship: async ({ node }) => {
+    relationship: ({ node }) => {
       const n = node as any;
       if (n.relationTo !== "docs") return null;
       const raw = n.value;
-      let doc: Doc | undefined;
-      if (isDoc(raw)) {
-        doc = raw;
-      } else if (raw != null) {
-        const id = String(raw);
-        doc = docCache.get(id);
-        if (!doc) {
-          doc = (await payload.findByID({
-            collection: "docs",
-            depth: 2,
-            id,
-          })) as Doc;
-          docCache.set(id, doc);
-        }
-      }
-      if (!doc) return null;
-      const href = await resolveDocHref({ doc, docCache, categoryCache, payload });
+      const docId =
+        typeof raw === "object" && raw !== null ? String(raw.id) : raw != null ? String(raw) : null;
+      if (!docId) return null;
+      const summary = hrefMap.get(docId);
+      if (!summary) return null;
+
       const body = (
         <article className="lexical-relationship-card !mt-2 rounded-lg border border-border bg-card p-2 shadow-sm">
-          <p className="text-sm font-semibold text-primary">{doc.title ?? "Related document"}</p>
-          {doc.description ? (
-            <p className="text-sm text-muted-foreground">{doc.description}</p>
+          <p className="text-sm font-semibold text-primary">
+            {summary.title || "Related document"}
+          </p>
+          {summary.description ? (
+            <p className="text-sm text-muted-foreground">{summary.description}</p>
           ) : null}
         </article>
       );
-      return href ? (
+
+      return (
         <a
-          href={href}
+          href={summary.href}
           className="block no-underline hover:no-underline focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2"
         >
           {body}
         </a>
-      ) : (
-        body
       );
     },
 
@@ -125,9 +112,9 @@ export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
         );
       },
 
-      card: async ({ node }: { node: any }) => {
+      card: ({ node }: { node: any }) => {
         const f = (node as any).fields;
-        const link = await resolveLink(f.link, payload);
+        const link = resolveLink(f.link, hrefMap);
         if (!link) return null;
         return (
           <Card
@@ -140,11 +127,11 @@ export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
         );
       },
 
-      cardGrid: async ({ node }: { node: any }) => {
+      cardGrid: ({ node }: { node: any }) => {
         const f = (node as any).fields;
-        const resolved = await Promise.all(
-          (f.cards ?? []).map(async (c: any) => {
-            const link = await resolveLink(c.link, payload);
+        const cards = (f.cards ?? [])
+          .map((c: any) => {
+            const link = resolveLink(c.link, hrefMap);
             if (!link) return null;
             return (
               <Card
@@ -156,9 +143,9 @@ export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
                 newTab={link.newTab}
               />
             );
-          }),
-        );
-        return <CardGrid columns={f.columns}>{resolved.filter(Boolean)}</CardGrid>;
+          })
+          .filter(Boolean);
+        return <CardGrid columns={f.columns}>{cards}</CardGrid>;
       },
 
       steps: ({ node }: { node: any }) => {
@@ -172,29 +159,31 @@ export function buildJSXConverters(payload: Payload): JSXConvertersFunction {
 
       tabs: ({ node }: { node: any }) => {
         const f = (node as any).fields;
-        const items = (f.items ?? []).map((it: any) => ({
-          label: it.label,
-          content: <Nested data={it.content} />,
-        }));
-        return <Tabs items={items} />;
+        const items = (f.items ?? []) as Array<{ label: string; content: any }>;
+        const labels = items.map((it) => it.label);
+        return (
+          <Tabs labels={labels}>
+            {items.map((it, idx) => (
+              <Nested key={`${idx}-${it.label}`} data={it.content} />
+            ))}
+          </Tabs>
+        );
       },
 
-      personaRoute: async ({ node }: { node: any }) => {
+      personaRoute: ({ node }: { node: any }) => {
         const f = (node as any).fields;
-        const routes = (
-          await Promise.all(
-            (f.routes ?? []).map(async (r: any) => {
-              const link = await resolveLink(r.link, payload);
-              if (!link) return null;
-              return {
-                persona: r.persona,
-                destination: r.destination,
-                href: link.href,
-                newTab: link.newTab,
-              };
-            }),
-          )
-        ).filter((x): x is NonNullable<typeof x> => x != null);
+        const routes = (f.routes ?? [])
+          .map((r: any) => {
+            const link = resolveLink(r.link, hrefMap);
+            if (!link) return null;
+            return {
+              persona: r.persona,
+              destination: r.destination,
+              href: link.href,
+              newTab: link.newTab,
+            };
+          })
+          .filter((x: unknown): x is NonNullable<typeof x> => x != null);
         return <PersonaRoute heading={f.heading} routes={routes} />;
       },
     },
