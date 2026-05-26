@@ -70,6 +70,14 @@ const getSourceFiles = unstable_cache(
 
     const files: VirtualFile[] = [];
 
+    files.push({
+      path: "meta",
+      data: {
+        pages: categories.map((category) => category.slug),
+      } as VirtualFile["data"],
+      type: "meta",
+    });
+
     for (const category of categories) {
       const categoryDocs = docsByCategory.get(String(category.id)) ?? [];
 
