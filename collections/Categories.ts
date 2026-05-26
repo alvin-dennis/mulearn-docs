@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache";
 import type { CollectionConfig } from "payload";
 import { validateSlug } from "@/lib/utils";
 
@@ -6,6 +7,20 @@ export const Categories: CollectionConfig = {
   admin: {
     useAsTitle: "title",
     defaultColumns: ["title", "slug", "order"],
+  },
+  hooks: {
+    afterChange: [
+      () => {
+        revalidateTag("categories", "max");
+        revalidateTag("docs", "max");
+      },
+    ],
+    afterDelete: [
+      () => {
+        revalidateTag("categories", "max");
+        revalidateTag("docs", "max");
+      },
+    ],
   },
   access: {
     // Public read access for categories

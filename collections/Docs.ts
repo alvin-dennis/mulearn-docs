@@ -5,7 +5,9 @@ import {
   EXPERIMENTAL_TableFeature,
   lexicalEditor,
 } from "@payloadcms/richtext-lexical";
+import { revalidateTag } from "next/cache";
 import type { CollectionConfig } from "payload";
+import { env } from "@/lib/env";
 import { validateSlug } from "@/lib/utils";
 import { Callout } from "./blocks/Callout";
 import { Card } from "./blocks/Card";
@@ -16,10 +18,6 @@ import { Tabs } from "./blocks/Tabs";
 
 export const Docs: CollectionConfig = {
   slug: "docs",
-  admin: {
-    useAsTitle: "title",
-    defaultColumns: ["title", "category", "slug", "order", "parent", "lastEditedBy"],
-  },
   access: {
     // Public read access for documentation
     read: () => true,
@@ -55,6 +53,24 @@ export const Docs: CollectionConfig = {
         return data;
       },
     ],
+    afterChange: [
+      () => {
+        revalidateTag("docs", "max");
+      },
+    ],
+    afterDelete: [
+      () => {
+        revalidateTag("docs", "max");
+      },
+    ],
+  },
+  admin: {
+    useAsTitle: "title",
+    defaultColumns: ["title", "category", "slug", "order", "parent", "lastEditedBy"],
+    preview: (data) => {
+      const slug = data?.slug === "home" || !data?.slug ? "" : data.slug;
+      return `${env.NEXT_PUBLIC_APP_URL}/preview/${slug}`;
+    },
   },
   fields: [
     {
@@ -69,6 +85,7 @@ export const Docs: CollectionConfig = {
       name: "slug",
       type: "text",
       required: true,
+      index: true,
       validate: validateSlug,
       admin: {
         description: "URL-friendly identifier for this page",
@@ -86,6 +103,7 @@ export const Docs: CollectionConfig = {
       type: "relationship",
       relationTo: "categories" as any,
       required: true,
+      index: true,
       admin: {
         description: "The sidebar tab/category this doc belongs to",
         position: "sidebar",
@@ -95,6 +113,7 @@ export const Docs: CollectionConfig = {
       name: "parent",
       type: "relationship",
       relationTo: "docs" as any,
+      index: true,
       admin: {
         description: "Parent page for nested documentation structure",
         position: "sidebar",

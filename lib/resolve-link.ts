@@ -1,6 +1,5 @@
-import type { Payload } from "payload";
-import type { Category, Doc } from "@/payload-types";
-import { isDoc, resolveDocHref } from "./doc-paths";
+import type { Doc } from "@/payload-types";
+import type { HrefMap } from "./href-map";
 
 export type LinkValue = {
   type?: "internal" | "external";
@@ -9,10 +8,10 @@ export type LinkValue = {
   newTab?: boolean | null;
 };
 
-export async function resolveLink(
+export function resolveLink(
   link: LinkValue | null | undefined,
-  payload: Payload,
-): Promise<{ href: string; newTab: boolean } | null> {
+  hrefMap: HrefMap,
+): { href: string; newTab: boolean } | null {
   if (!link) return null;
 
   if (link.type === "external") {
@@ -22,21 +21,13 @@ export async function resolveLink(
 
   if (!link.doc) return null;
 
-  const docCache = new Map<string, Doc>();
-  const categoryCache = new Map<string, Category>();
+  const docId =
+    typeof link.doc === "object" && link.doc !== null
+      ? String((link.doc as Doc).id)
+      : String(link.doc);
 
-  let doc: Doc | undefined;
-  if (isDoc(link.doc)) {
-    doc = link.doc;
-  } else {
-    doc = (await payload.findByID({
-      collection: "docs",
-      depth: 2,
-      id: String(link.doc),
-    })) as Doc;
-  }
+  const summary = hrefMap.get(docId);
+  if (!summary) return null;
 
-  if (!doc) return null;
-  const href = await resolveDocHref({ doc, docCache, categoryCache, payload });
-  return href ? { href, newTab: false } : null;
+  return { href: summary.href, newTab: false };
 }

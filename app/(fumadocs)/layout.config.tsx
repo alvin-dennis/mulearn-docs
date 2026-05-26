@@ -21,6 +21,7 @@ export const baseOptions: BaseLayoutProps = {
           height={100}
           alt="µLearn Logo"
           className="dark:hidden"
+          priority
         />
         <Image
           src="/mulearn-logo-dark.webp"
@@ -28,6 +29,7 @@ export const baseOptions: BaseLayoutProps = {
           height={100}
           alt="µLearn Logo"
           className="hidden dark:block"
+          loading="lazy"
         />
       </div>
     ),

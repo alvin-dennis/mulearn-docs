@@ -1,11 +1,18 @@
 "use client";
 
-import type { KeyboardEvent, ReactNode } from "react";
-import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import {
+  Children,
+  type KeyboardEvent,
+  type ReactNode,
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { slugify } from "@/lib/doc-paths";
 import { cn } from "@/lib/utils";
-
-export type TabItem = { label: string; content: ReactNode };
 
 const HASH_KEY = "tab";
 
@@ -23,9 +30,10 @@ function writeHashTab(slug: string) {
   window.history.replaceState(null, "", newHash);
 }
 
-export function Tabs({ items }: { items: TabItem[] }) {
+export function Tabs({ labels, children }: { labels: string[]; children: ReactNode }) {
   const id = useId();
-  const slugs = useMemo(() => items.map((it, idx) => slugify(it.label) || `tab-${idx}`), [items]);
+  const panels = useMemo(() => Children.toArray(children), [children]);
+  const slugs = useMemo(() => labels.map((label, idx) => slugify(label) || `tab-${idx}`), [labels]);
   const [active, setActive] = useState(0);
   const tabRefs = useRef<(HTMLButtonElement | null)[]>([]);
 
@@ -45,21 +53,24 @@ export function Tabs({ items }: { items: TabItem[] }) {
     [slugs],
   );
 
-  const onKeyDown = (e: KeyboardEvent<HTMLDivElement>) => {
-    if (e.key === "ArrowRight") {
-      e.preventDefault();
-      select((active + 1) % items.length);
-    } else if (e.key === "ArrowLeft") {
-      e.preventDefault();
-      select((active - 1 + items.length) % items.length);
-    } else if (e.key === "Home") {
-      e.preventDefault();
-      select(0);
-    } else if (e.key === "End") {
-      e.preventDefault();
-      select(items.length - 1);
-    }
-  };
+  const onKeyDown = useCallback(
+    (e: KeyboardEvent<HTMLDivElement>) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        select((active + 1) % labels.length);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        select((active - 1 + labels.length) % labels.length);
+      } else if (e.key === "Home") {
+        e.preventDefault();
+        select(0);
+      } else if (e.key === "End") {
+        e.preventDefault();
+        select(labels.length - 1);
+      }
+    },
+    [active, labels.length, select],
+  );
 
   return (
     <div className="my-6">
@@ -69,7 +80,7 @@ export function Tabs({ items }: { items: TabItem[] }) {
         onKeyDown={onKeyDown}
         className="flex border-fd-border border-b"
       >
-        {items.map((it, i) => {
+        {labels.map((label, i) => {
           const selected = i === active;
           return (
             <button
@@ -91,12 +102,12 @@ export function Tabs({ items }: { items: TabItem[] }) {
                   : "border-transparent text-fd-muted-foreground hover:text-fd-foreground",
               )}
             >
-              {it.label}
+              {label}
             </button>
           );
         })}
       </div>
-      {items.map((it, i) => (
+      {panels.map((panel, i) => (
         <div
           key={slugs[i]}
           role="tabpanel"
@@ -105,7 +116,7 @@ export function Tabs({ items }: { items: TabItem[] }) {
           hidden={i !== active}
           className="pt-4 [&>p:first-child]:mt-0 [&>p:last-child]:mb-0"
         >
-          {it.content}
+          {panel}
         </div>
       ))}
     </div>

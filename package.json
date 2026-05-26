@@ -7,13 +7,13 @@
     "build": "next build",
     "dev": "next dev",
     "start": "next start",
-    "postinstall": "fumadocs-mdx",
     "typecheck": "tsc --noEmit",
     "validate": "bun run typecheck && bun run lint",
     "format:check": "biome format app collections components lib",
     "format": "biome format app collections components lib --write",
     "payload": "cross-env PAYLOAD_CONFIG_PATH=payload.config.ts payload",
     "generate:types": "cross-env PAYLOAD_CONFIG_PATH=payload.config.ts payload generate:types",
+    "seed": "cross-env PAYLOAD_CONFIG_PATH=payload.config.ts bun scripts/seed.ts",
     "prepare": "husky"
   },
   "dependencies": {
@@ -33,7 +33,6 @@
     "clsx": "^2.1.1",
     "dotenv": "^17.2.3",
     "fumadocs-core": "16.4.7",
-    "fumadocs-mdx": "14.2.5",
     "fumadocs-ui": "16.4.7",
     "graphql": "^16.12.0",
     "lucide-react": "^0.562.0",
