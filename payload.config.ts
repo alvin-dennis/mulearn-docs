@@ -43,8 +43,11 @@ export default buildConfig({
     },
     livePreview: {
       collections: ["docs"],
-      url: ({ collectionConfig, data }) =>
-        `${env.NEXT_PUBLIC_APP_URL}/${collectionConfig?.slug === "docs" ? (data.slug === "home" ? "" : data.slug) : ""}`,
+      url: ({ collectionConfig, data }) => {
+        if (collectionConfig?.slug !== "docs") return env.NEXT_PUBLIC_APP_URL as string;
+        const slug = data?.slug === "home" || !data?.slug ? "" : data.slug;
+        return `${env.NEXT_PUBLIC_APP_URL}/preview/${slug}`;
+      },
     },
   },
   collections: [Users, Categories, Docs],
@@ -59,7 +62,7 @@ export default buildConfig({
   }),
   editor: lexicalEditor(),
   graphQL: {
-    disable: false,
+    disable: true,
   },
   kv: databaseKVAdapter(),
   plugins: [

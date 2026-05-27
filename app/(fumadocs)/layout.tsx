@@ -29,7 +29,7 @@ export const metadata: Metadata = {
 
 const plusJakarta = Plus_Jakarta_Sans({
   subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
+  weight: ["400", "600"],
   variable: "--font-body",
   display: "swap",
 });
@@ -37,7 +37,9 @@ const plusJakarta = Plus_Jakarta_Sans({
 const bricolage = Bricolage_Grotesque({
   variable: "--font-display",
   subsets: ["latin"],
+  weight: ["600", "700"],
   display: "swap",
+  preload: false,
 });
 
 export default function Layout({ children }: { children: ReactNode }) {

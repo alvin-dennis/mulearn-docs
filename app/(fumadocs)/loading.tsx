@@ -1,9 +1,14 @@
-import Image from "next/image";
-
 export default function Loading() {
   return (
-    <div className="flex justify-center items-center min-h-screen">
-      <Image src="/assets/MuLoader.gif" alt="Loader" height={400} width={400} unoptimized />
+    <div className="p-4 md:p-8 animate-pulse" role="status" aria-live="polite" aria-label="Loading">
+      <div className="h-6 w-40 mb-4 bg-muted rounded" />
+      <div className="h-8 w-64 mb-6 bg-muted rounded" />
+      <div className="space-y-3">
+        <div className="h-4 w-full bg-muted rounded" />
+        <div className="h-4 w-5/6 bg-muted rounded" />
+        <div className="h-4 w-2/3 bg-muted rounded" />
+      </div>
+      <span className="sr-only">Loading...</span>
     </div>
   );
 }

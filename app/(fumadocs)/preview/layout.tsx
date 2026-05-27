@@ -3,7 +3,7 @@ import type { ReactNode } from "react";
 import { baseOptions } from "@/app/(fumadocs)/layout.config";
 import { getSource } from "@/lib/source";
 
-export default async function Layout({ children }: { children: ReactNode }) {
+export default async function PreviewLayout({ children }: { children: ReactNode }) {
   const source = await getSource();
   const tree = source.pageTree;
 
@@ -20,4 +20,4 @@ export default async function Layout({ children }: { children: ReactNode }) {
   );
 }
 
-export const revalidate = 3600;
+export const dynamic = "force-dynamic";
